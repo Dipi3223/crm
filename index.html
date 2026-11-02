@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>CRM — вход</title>
+<style>
+  :root { color-scheme: light dark; }
+  body { margin: 0; min-height: 100vh; display: flex; align-items: center; justify-content: center;
+         font: 16px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; background: #f8fafc; color: #1e293b; }
+  @media (prefers-color-scheme: dark) { body { background: #0f172a; color: #e2e8f0; } }
+  main { padding: 24px 16px; text-align: center; max-width: 420px; }
+  a { color: #0284c7; font-weight: 600; word-break: break-all; }
+  .muted { opacity: .7; font-size: 14px; }
+</style>
+</head>
+<body>
+<main>
+  <p id="status">Открываем CRM…</p>
+  <p id="link" class="muted"></p>
+</main>
+<script>
+// Временная CRM (пока хостинг Beget лежит) работает через туннель, и его адрес
+// меняется. Текущий лежит в adres.txt - его обновляет компьютер, где стоит CRM.
+// Запрос с меткой времени и no-store, чтобы не взять старый адрес из кэша.
+fetch('adres.txt?t=' + Date.now(), { cache: 'no-store' })
+  .then(function (r) { return r.text(); })
+  .then(function (t) {
+    var адрес = t.trim();
+    if (!/^https:\/\/[a-z0-9.-]+\/?$/.test(адрес)) throw new Error('нет адреса');
+    var путь = location.hash.slice(1);
+    document.getElementById('link').innerHTML = 'Если не открылось само: <a href="' + адрес + '">' + адрес + '</a>';
+    location.replace(адрес.replace(/\/$/, '') + '/' + путь.replace(/^\//, ''));
+  })
+  .catch(function () {
+    document.getElementById('status').textContent =
+      'CRM сейчас недоступна. Обновите страницу через минуту.';
+  });
+</script>
+</body>
+</html>
