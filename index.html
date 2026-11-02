@@ -21,14 +21,14 @@
   <p id="link" class="muted"></p>
 </main>
 <script>
-// Временная CRM (пока хостинг Beget лежит) работает через туннель, и его адрес
-// меняется. Текущий лежит в adres.txt - его обновляет компьютер, где стоит CRM.
+// Временная CRM (пока хостинг Beget лежит). Её текущий адрес - в adres.txt:
+// сначала туннель с компьютера, с 03.11.2026 - хостинг Sprinthost (он без https).
 // Запрос с меткой времени и no-store, чтобы не взять старый адрес из кэша.
 fetch('adres.txt?t=' + Date.now(), { cache: 'no-store' })
   .then(function (r) { return r.text(); })
   .then(function (t) {
     var адрес = t.trim();
-    if (!/^https:\/\/[a-z0-9.-]+\/?$/.test(адрес)) throw new Error('нет адреса');
+    if (!/^https?:\/\/[a-z0-9.-]+\/?$/.test(адрес)) throw new Error('нет адреса');
     var путь = location.hash.slice(1);
     document.getElementById('link').innerHTML = 'Если не открылось само: <a href="' + адрес + '">' + адрес + '</a>';
     location.replace(адрес.replace(/\/$/, '') + '/' + путь.replace(/^\//, ''));
